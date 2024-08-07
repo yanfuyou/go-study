@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
+	"go-study/sorter/src/algo"
 	"io"
 	"os"
 	"strconv"
@@ -12,15 +13,24 @@ import (
 // *开头表示指针
 var infile *string = flag.String("i", "infile", "file contains values for sorting")
 var outfile *string = flag.String("o", "outfile", "file contains values for sorting")
-var algo *string = flag.String("a", "qsort", "sort algo")
+var algoName *string = flag.String("a", "qsort", "sort algo")
 
 func main() {
 	// 解析命令行参数
 	flag.Parse()
 	if infile != nil {
-		fmt.Printf("infile: %s,outfile :%s,algo: %s\n", *infile, *outfile, *algo)
+		fmt.Printf("infile: %s,outfile :%s,algo: %s\n", *infile, *outfile, *algoName)
 	}
 	vals, err := readVals(*infile)
+	// 选择排序算法排序
+	switch *algoName {
+	case "bubble":
+		algo.BubbleSort(vals)
+	default:
+		fmt.Println("不支持的排序算法")
+		return
+	}
+
 	if err == nil {
 		fmt.Println("vals:", vals)
 		writeVals(vals, *outfile)
@@ -47,7 +57,7 @@ func readVals(infile string) (values []int, err error) {
 	values = make([]int, 0)
 	for {
 		line, isPrefix, err1 := br.ReadLine()
-		fmt.Println("line:", string(line), isPrefix)
+		//fmt.Println("line:", string(line), isPrefix)
 		if err1 != nil {
 			if err1 != io.EOF {
 				err = err1
