@@ -5,6 +5,7 @@ import (
     "io"
     "log"
     "net/http"
+	"html/template"
 )
 
 
@@ -14,11 +15,17 @@ const (
 
 func uploadHandler(w http.ResponseWriter,r *http.Request){
     if r.Method == "GET" {
-        io.WriteString(w,"<html><header><header/><body><form method=\"POST\" action=\"/upload\"" +
-	    " enctype=\"multipart/form-data\">"+
-	    "Choose an image to upload:<input name=\"image\" type=\"file\" /> "+
-	    "<input type=\"submit\" value=\"Upload\"/>"+
-	    "</form></body></html>")
+        // io.WriteString(w,"<html><header><header/><body><form method=\"POST\" action=\"/upload\"" +
+	    // " enctype=\"multipart/form-data\">"+
+	    // "Choose an image to upload:<input name=\"image\" type=\"file\" /> "+
+	    // "<input type=\"submit\" value=\"Upload\"/>"+
+	    // "</form></body></html>")
+		t,err := template.ParseFiles("./html/upload.html")
+		if err != nil {
+			http.Error(w,err.Error(),http.StatusInternalServerError)
+			return
+		}
+		t.Execute(w,nil)
 	    return
     }
     if r.Method == "POST" {
